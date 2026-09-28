@@ -1,0 +1,28 @@
+{
+  "name": "pacman",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "deploy": "npm run build && npx wrangler deploy",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource/press-start-2p": "^5.3.0",
+    "kaplay": "^3001.0.19",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

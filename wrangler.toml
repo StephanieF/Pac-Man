@@ -1,0 +1,8 @@
+# Worker with static assets. Used by `npm run deploy` (wrangler deploy) and by
+# Cloudflare's Git-connected Workers Builds (dashboard "Deploy command").
+name = "pacman"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
