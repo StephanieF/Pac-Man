@@ -161,11 +161,11 @@ This ships as a Worker with static assets: `npm run deploy` builds and runs `wra
 
 ## Asset licensing and credits
 
-- **KingPepe's** sprite rip states "Credit is not needed but would be nice". Credit is shown in the page footer and on the title screen.
+- **KingPepe's** sprite rip states "Credit is not needed but would be nice". Credit is shown in the page footer and on the title screen. Always give credit where it's due.
 - **alexparr's** sound rip carries no stated license; it is credited in the same places.
-- Pac-Man itself belongs to Bandai Namco, and neither source page grants rights to it.
+- Pac-Man itself belongs to Bandai Namco, and neither source page grants rights to it. This is for entertainment and educational purposes only.
 
-Before making the deployed site public, decide whether to keep the site private or unlisted, swap in original art and audio, or get permission from the rights holders.
+
 
 ## Design notes
 
