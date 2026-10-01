@@ -131,7 +131,29 @@ npm run dev      # http://localhost:5173
 
 Other scripts: `npm test` (game-logic tests), `npm run build`, `npm run preview`, `npm run typecheck`.
 
-**Controls:** arrows or WASD to steer. Pac-Man keeps moving until he hits a wall; press a turn before the corner and he takes it when he gets there.
+## Controls
+
+| Key | Action |
+| --- | --- |
+| Arrows or WASD | Steer |
+| Space (or click) | Start a game from the title screen |
+
+- **Tap, don't hold.** Pac-Man keeps moving in the last direction you pressed until he hits a wall. One tap is enough to change direction.
+- **Press turns early.** Press a turn before you reach the corner and Pac-Man takes it as soon as he gets there. Pressing early is the most reliable way to play.
+- **Slightly late is fine.** A turn pressed just after Pac-Man passes a corner (about a tenth of a second) is still taken.
+- **Reversing is instant.** Press the opposite direction at any time to turn back.
+- **You can steer before play starts.** A direction pressed during "READY!" is used as soon as play starts.
+
+### Keyboard delay
+
+Wireless keyboards, especially Bluetooth ones, can add a noticeable delay between pressing a key and the game receiving it. Some add even more on the first press after a pause, while they wake from power saving. The game can't remove that delay, but it's built to cope with it: taps are never dropped, the most recent key always wins, and slightly late turns still count (see [Design notes](#design-notes)).
+
+If the controls still feel slow:
+
+- Press turns earlier than you would with no delay.
+- Use a wired or 2.4 GHz USB-receiver keyboard, which usually has less delay than Bluetooth.
+- Turn off any power-saving or sleep mode on the keyboard.
+- If you're running the code yourself, raise `TURN_GRACE` in `src/game/constants.ts` to accept later turns. It must stay below 8 (pixels).
 
 ## Deploying to Cloudflare
 
@@ -150,4 +172,5 @@ Before making the deployed site public, decide whether to keep the site private 
 - **The maze is data.** `MAP` in `src/game/maze.ts` was generated from the sprite sheet: 40 columns of 8px, alternating 4px wall rows and 16px lanes. It reproduces the 2600's 126 video wafers and 4 power pills, and a test checks every one is reachable.
 - **2600 quirks kept:** the escape tunnel wraps top-to-bottom (not sideways), Pac-Man only ever faces left or right, wafers are dashes, pills blink, a vitamin replaces the arcade fruit, and clearing a maze awards an extra life.
 - **2600 quirk left out:** the original's ghost flicker (each ghost drawn every fourth frame). It's hard on the eyes and on photosensitive players.
+- **Input is event-driven, for laggy keyboards.** Steering reads key *presses*, not held keys, so a tap whose keydown and keyup arrive in the same frame (common over Bluetooth) isn't lost, and the newest press wins even if an older key's keyup arrives late. A turn pressed up to `TURN_GRACE` pixels (~100ms) after passing a junction is still taken.
 - **Tunable numbers** live in `src/game/constants.ts`: speeds, ghost release times and chase chance, fright time, vitamin timing. Point values follow the 2600 manual (wafer 1, pill 5, vitamin 100, ghosts 20/40/80/160); speeds and AI aren't documented, so those are playable guesses, not measurements.

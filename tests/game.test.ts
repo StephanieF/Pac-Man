@@ -125,6 +125,28 @@ describe("pac-man", () => {
     expect(p.r).toBeLessThan(PAC_START.r);
   });
 
+  it("steers from a single tap: the direction sticks after the key is released", () => {
+    const p = createPacMan();
+    stepPacMan(p, "right", 1); // one frame of input, as a quick tap delivers
+    run(p, null, 1);
+    expect(p.dir).toBe("right");
+    expect(p.c).toBeGreaterThan(PAC_START.c);
+  });
+
+  it("still takes a turn pressed just after passing the junction", () => {
+    // lane 4 has a passage up at column 9; Pac-Man is heading left, a few px past it
+    const late = createPacMan();
+    Object.assign(late, { c: 9, r: 4, dir: "left", off: 4 });
+    stepPacMan(late, "up", 1);
+    expect([late.c, late.dir]).toEqual([9, "up"]);
+    expect(position(late)).toEqual({ x: nodeX(9), y: laneY(4) - 5 }); // 4px carried over + 1
+
+    const tooLate = createPacMan();
+    Object.assign(tooLate, { c: 9, r: 4, dir: "left", off: 7 });
+    stepPacMan(tooLate, "up", 1);
+    expect([tooLate.r, tooLate.dir]).toEqual([4, "left"]);
+  });
+
   it("goes out the top tunnel and comes back in at the bottom", () => {
     const p = createPacMan();
     Object.assign(p, { c: 19, r: 0, dir: "up", off: 0 });

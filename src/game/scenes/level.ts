@@ -32,6 +32,17 @@ const CHOMP_PIXELS = 3; // distance per chomp frame
 const WAFER_SOUND_GAP = 0.12;
 const SCARED_SOUND_GAP = 0.52; // length of the scared-ghost loop
 
+const DIR_KEYS: Partial<Record<string, Dir>> = {
+  left: "left",
+  a: "left",
+  right: "right",
+  d: "right",
+  up: "up",
+  w: "up",
+  down: "down",
+  s: "down",
+};
+
 type Phase = "ready" | "playing" | "paused" | "dying" | "cleared" | "gameover";
 
 /**
@@ -75,12 +86,18 @@ export function registerLevelScene(k: KAPLAYCtx) {
     let message = addLabel(k, "READY!", GAME_WIDTH / 2, laneY(PAC_START.r) + 14, COLORS.white, { anchor: "top" });
     play("begin");
 
-    const heldDir = (): Dir | null => {
-      if (k.isKeyDown("left") || k.isKeyDown("a")) return "left";
-      if (k.isKeyDown("right") || k.isKeyDown("d")) return "right";
-      if (k.isKeyDown("up") || k.isKeyDown("w")) return "up";
-      if (k.isKeyDown("down") || k.isKeyDown("s")) return "down";
-      return null;
+    // Steer from key-press events rather than polling held keys: a tap whose keydown and
+    // keyup land in the same frame (common with Bluetooth keyboards) still counts, and the
+    // newest press always wins even if an older key's keyup arrives late. Pac-Man remembers
+    // the direction, so holding the key isn't needed. Presses during READY are kept too.
+    let pressed: Dir | null = null;
+    k.onKeyPress((key) => {
+      pressed = DIR_KEYS[key] ?? pressed;
+    });
+    const takePress = () => {
+      const dir = pressed;
+      pressed = null;
+      return dir;
     };
 
     const draw = () => {
@@ -123,7 +140,7 @@ export function registerLevelScene(k: KAPLAYCtx) {
       const scared = now < scaredUntil;
       if (!scared) ghosts.forEach((g) => (g.scared = false));
 
-      stepPacMan(pac, heldDir(), PAC_SPEED * speed * dt);
+      stepPacMan(pac, takePress(), PAC_SPEED * speed * dt);
       const p = position(pac);
 
       for (const d of eatDots(dots, p)) {

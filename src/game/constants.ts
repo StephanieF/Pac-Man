@@ -16,6 +16,10 @@ export const GHOST_SPEED = 54;
 export const SCARED_SPEED = 32;
 export const LEVEL_SPEEDUP = 0.08;
 export const MAX_SPEEDUP = 1.4;
+// A turn pressed up to this many pixels after Pac-Man passes a junction is still taken
+// (~100ms at base speed), which absorbs keyboard latency. Must stay under 8, the gap
+// between neighbouring junctions across a lane.
+export const TURN_GRACE = 6;
 
 // Ghosts
 export const GHOST_RELEASE = [1, 3, 5, 7] as const; // seconds after the round starts
